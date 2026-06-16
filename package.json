@@ -4,7 +4,7 @@
   "description": "Trivial node app to monitor new iOS releases and notify user by email.",
   "type": "module",
   "dependencies": {
-    "cheerio": "^1.2.0",
+    "puppeteer": "^25.1.0",
     "nodemailer": "^8.0.7"
   },
   "engines": {

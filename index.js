@@ -1,6 +1,6 @@
 import fs from 'fs'
 import nodemailer from 'nodemailer';
-import { load } from 'cheerio';
+import puppeteer from 'puppeteer';
 import { writeFile } from 'fs/promises';
 
 const appleUrl = process.env.APPLE_URL;
@@ -19,29 +19,29 @@ var websiteVersion = '';
 if (fs.existsSync(file)) {
   try {
     savedVersion = JSON.parse(fs.readFileSync(file, encoding)).ios;
-    console.log(`Running local iOS version check: ${savedVersion} saved.`)
+    console.log(`Local iOS version saved: ${savedVersion}.`)
   } catch (e) {
     throw new Error(`File Read Error: ${e}`);
   }
 }
 
-// get current ios version from apple website
-const response = await fetch(appleUrl);
-if (!response.ok) throw new Error(`HTTP GET Error: ${response.status}`);
-const html = await response.text();
-const $ = load(html);
-$('table tr').each((_, element) => {
-  const rowText = $(element).text();
-  const match = rowText.match(/iOS\s+([0-9.]+)/i);
-  if (match && match[1]) {
-    websiteVersion = match[1];
-    console.log(`Apple iOS version fetched from website: ${websiteVersion} online.`)
-    return false;
-  }
+// get current ios version from the Apple website
+const browser = await puppeteer.launch();
+const page = await browser.newPage();
+await page.goto('https://developer.apple.com/documentation/ios-ipados-release-notes');
+await page.waitForSelector('p');
+websiteVersion = await page.$$eval('p', (paragraphs, regexStr) => {
+  const targetRegex = /iOS & iPadOS .* Release Notes/i;
+  const found = paragraphs.find(p => targetRegex.test(p.textContent));
+  const regex = /iOS & iPadOS (.*) Release Notes/i;
+  return found.textContent.match(regex)[1];
 });
+console.log(`Apple iOS version fetched from website: ${websiteVersion}.`);
+await browser.close();
 
+// check if new version and send notification email if required
 if (savedVersion != websiteVersion) {
-  console.log('New iOS version discovered.')
+  console.log('New iOS version detected.')
   // update saved state file
   try {
     const jsonString = JSON.stringify({ "ios": websiteVersion }); 
@@ -55,9 +55,9 @@ if (savedVersion != websiteVersion) {
     if (error) {
       throw new Error(`Email Send Error: ${error}`);
     } else {
-      console.log(`New iOS version ${websiteVersion} email sent.`)
+      console.log(`New iOS version email sent for ${websiteVersion}.`)
     }
   });
 } else {
-  console.log('Check successfully ran. No new iOS versions discovered.')
+  console.log('Check successfully ran. No new iOS versions detected.')
 }
