@@ -26,7 +26,14 @@ if (fs.existsSync(file)) {
 }
 
 // get current ios version from the Apple website
-const browser = await puppeteer.launch();
+const browser = await puppeteer.launch({
+  headless: true,
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage'
+  ]
+});
 const page = await browser.newPage();
 await page.goto('https://developer.apple.com/documentation/ios-ipados-release-notes');
 await page.waitForSelector('p');
