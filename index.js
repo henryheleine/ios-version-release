@@ -4,6 +4,7 @@ import puppeteer from 'puppeteer';
 import { writeFile } from 'fs/promises';
 
 const appleUrl = process.env.APPLE_URL;
+const browser = await puppeteer.launch({headless: true, args:['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']});
 const emailFrom = process.env.EMAIL_FROM;
 const emailTo = process.env.EMAIL_TO;
 const host = process.env.SMTP;
@@ -15,6 +16,7 @@ const transporter = nodemailer.createTransport({host: host, port: port, auth: { 
 var savedVersion = '';
 var websiteVersion = '';
 
+
 // read in saved iOS version
 if (fs.existsSync(file)) {
   try {
@@ -25,33 +27,22 @@ if (fs.existsSync(file)) {
   }
 }
 
+
 // get current ios version from the Apple website
-const browser = await puppeteer.launch({
-  headless: true,
-  args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage'
-  ]
-});
 const page = await browser.newPage();
 await page.goto('https://developer.apple.com/documentation/ios-ipados-release-notes');
-await page.waitForFunction(() =>
-  [...document.querySelectorAll('a, h2, h3')].some(el =>
-    /iOS & iPadOS .* Release Notes/i.test(el.textContent)
-  )
-);
-websiteVersion = await page.$$eval('a, h2, h3', (elements) => {
-  const regex = /iOS & iPadOS .* Release Notes/i;
-  const found = elements.find(el => regex.test(el.textContent?.trim() ?? ''));
-  if (!found) return null;
-  const match = found.textContent.match(regex);
-  return match ? match[1] : null;
+await page.waitForSelector('h3');
+websiteVersion = await page.$$eval('p', (paragraphs, regexStr) => {
+  const targetRegex = /iOS & iPadOS .* Release Notes/i;
+  const found = paragraphs.find(p => targetRegex.test(p.textContent));
+  const regex = /iOS & iPadOS (.*) Release Notes/i;
+  return found.textContent.match(regex)[1];
 });
 console.log(`Apple iOS version fetched from website: ${websiteVersion}.`);
 await browser.close();
 
-// check if new version and send notification email if required
+
+// check for new version and save/send notification email if required
 if (savedVersion != websiteVersion) {
   console.log('New iOS version detected.')
   // update saved state file
