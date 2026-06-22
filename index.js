@@ -33,10 +33,10 @@ const page = await browser.newPage();
 await page.goto('https://developer.apple.com/documentation/ios-ipados-release-notes');
 await page.waitForSelector('h3');
 websiteVersion = await page.$$eval('p', (paragraphs, regexStr) => {
-  const targetRegex = /iOS & iPadOS .* Release Notes/i;
-  const found = paragraphs.find(p => targetRegex.test(p.textContent));
   const regex = /iOS & iPadOS (.*) Release Notes/i;
-  return found.textContent.match(regex)[1];
+  const found = paragraphs.find((p) => regex.test(p.textContent));
+  const match = found?.textContent?.match(regex);
+  return match?.[1]?.trim() ?? '';
 });
 console.log(`Apple iOS version fetched from website: ${websiteVersion}.`);
 await browser.close();
