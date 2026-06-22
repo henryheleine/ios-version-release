@@ -4,8 +4,8 @@ name: Run Node Script on Cron
 
 on:
   schedule:
-    # Runs every day at 01:00 AM UTC (adjust for your local timezone)
-    - cron: '*/45 * * * *'
+    # Runs every 4 hours
+    - cron: '* */4 * * *'
   # Allows manual runs from the Actions tab
   workflow_dispatch: 
 
