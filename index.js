@@ -16,6 +16,14 @@ const transporter = nodemailer.createTransport({host: host, port: port, auth: { 
 var savedVersion = '';
 var websiteVersion = '';
 
+// DEBUG
+console.log("debug start")
+console.log(host)
+console.log(port)
+console.log(emailFrom)
+console.log(pass)
+console.log(emailTo)
+console.log("debug end")
 
 // read in saved iOS version
 if (fs.existsSync(file)) {
