@@ -27,8 +27,4 @@ jobs:
       - name: Run Node process
         env:
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          SMTP: ${{ secrets.SMTP }}
-          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-          PORT: ${{ secrets.PORT }}
         run: node index.js

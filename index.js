@@ -18,11 +18,8 @@ var websiteVersion = '';
 
 // DEBUG
 console.log("debug start")
-console.log(host)
-console.log(port)
 console.log(emailFrom)
-console.log(pass)
-console.log(emailTo)
+console.log(process.env.EMAIL_FROM)
 console.log("debug end")
 
 // read in saved iOS version
