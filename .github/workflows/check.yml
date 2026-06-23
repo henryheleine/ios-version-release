@@ -28,4 +28,9 @@ jobs:
       - name: Run Node process
         run: node index.js
         env:
+          APPLE_URL: ${{ secrets.APPLE_URL }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          PORT: ${{ secrets.PORT }}
+          SMTP: ${{ secrets.SMTP }}
