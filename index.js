@@ -18,11 +18,7 @@ var websiteVersion = '';
 
 // DEBUG
 console.log("debug start")
-if (emailFrom) {
-  console.log("have email from")
-} else {
-  console.log("do NOT have email from")
-}
+console.log(emailFrom)
 console.log("debug end")
 
 // read in saved iOS version
