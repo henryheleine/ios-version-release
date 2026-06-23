@@ -5,7 +5,7 @@ import { writeFile } from 'fs/promises';
 
 const appleUrl = process.env.APPLE_URL;
 const browser = await puppeteer.launch({headless: true, args:['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']});
-const emailFrom = import.meta.env.EMAIL_FROM;
+const emailFrom = process.env.EMAIL_FROM;
 const emailTo = process.env.EMAIL_TO;
 const host = process.env.SMTP;
 const pass = process.env.EMAIL_PASS;
