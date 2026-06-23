@@ -42,7 +42,7 @@ await browser.close();
 
 
 // check for new version and save/send notification email if required
-if (savedVersion != websiteVersion) {
+if (savedVersion != websiteVersion && websiteVersion != '') {
   console.log('New iOS version detected.')
   // update saved state file
   try {
