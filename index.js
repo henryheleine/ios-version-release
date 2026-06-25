@@ -30,7 +30,9 @@ if (fs.existsSync(file)) {
 // get current ios version from the Apple website
 const page = await browser.newPage();
 await page.goto('https://developer.apple.com/documentation/ios-ipados-release-notes');
-await page.waitForSelector('div.aside');
+// await page.waitForSelector('div.aside');
+await page.waitForNetworkIdle();
+// await new Promise(resolve => setTimeout(resolve, 5000));
 websiteVersion = await page.$$eval('p', (paragraphs, regexStr) => {
   const regex = /iOS & iPadOS (.*) Release Notes/i;
   const found = paragraphs.find((p) => regex.test(p.textContent));
