@@ -4,8 +4,8 @@ name: Run Node Script on Cron
 
 on:
   schedule:
-    # Runs every 4 hours
-    # - cron: '* */4 * * *'
+    # Set to Feb 30th to disable for now
+    - cron: '0 0 30 2 *'
   # Allows manual runs from the Actions tab
   workflow_dispatch: 
 
